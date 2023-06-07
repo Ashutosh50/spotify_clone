@@ -1,10 +1,52 @@
 import React from 'react'
 import './Body.css'
 import Header from '../Header/Header'
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useStateValue } from '../Others/Datalayer';
+import Songrow from '../Songrow/Songrow';
 
 const Body = ({spotify}) => {
-  const [{ discover_weekly }] = useStateValue();
+  const [{ discover_weekly },dispatch] = useStateValue();
+  const playPlaylist = (id) => {
+    spotify
+      .play({
+        context_uri: `spotify:playlist:37i9dQZEVXcPlj8TAPRtWP`,
+      })
+      .then((res) => {
+        spotify.getMyCurrentPlayingTrack().then((r) => {
+          dispatch({
+            type: "SET_ITEM",
+            item: r.item,
+          });
+          dispatch({
+            type: "SET_PLAYING",
+            playing: true,
+          });
+        });
+      });
+  };
+
+  const playSong = (id) => {
+    spotify
+      .play({
+        uris: [`spotify:track:${id}`],
+      })
+      .then((res) => {
+        spotify.getMyCurrentPlayingTrack().then((r) => {
+          dispatch({
+            type: "SET_ITEM",
+            item: r.item,
+          });
+          dispatch({
+            type: "SET_PLAYING",
+            playing: true,
+          });
+        });
+      });
+  };
+
   return (
     <div className='body'>
        <Header spotify={spotify} />
@@ -16,10 +58,18 @@ const Body = ({spotify}) => {
           <p>{discover_weekly?.description}</p>
         </div>
       </div>
-        <div className='body_songs'>
-           <div className='body_icons'>
-            
+        <div className='body__songs'>
+           <div className='body__icons'>
+            <PlayCircleFilledIcon
+            className="body__shuffle"
+            onClick={playPlaylist}
+            />
+            <FavoriteIcon fontSize="large"/>
+            <MoreHorizIcon/>
            </div>
+           {discover_weekly?.tracks.items.map((item) => (
+          <Songrow playSong={playSong}  track={item.track} />
+        ))}
         </div>
       </div>
   )

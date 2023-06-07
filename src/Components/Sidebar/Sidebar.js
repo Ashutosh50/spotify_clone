@@ -8,7 +8,7 @@ import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import { useStateValue } from "../Others/Datalayer";
 
 function Sidebar() {
-  const [{ playlists }, dispatch] = useStateValue();
+  const [{ playlists }, ] = useStateValue();
   console.log(playlists);
 
   return (
